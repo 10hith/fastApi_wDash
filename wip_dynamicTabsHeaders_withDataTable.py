@@ -29,6 +29,12 @@ hist = pd.read_parquet("/home/basal/PycharmProjects/fastApi_wDash/dm_athena_feat
 
 
 def create_dynamic_card(data_store: List[Dict], column_name: str) -> dbc.Card:
+    """
+    Creates a card block with tabs for bar chart, pie chart and a data table
+    :param data_store: Data store containing the value distribution
+    :param column_name: Column for which the card block will be created
+    :return: A card block
+    """
     col_data_store = [x for x in data_store if x["column_name"] == column_name]
     fig = px.bar(
         col_data_store,
@@ -153,6 +159,9 @@ def on_data_set_graph(data_store, col_selected, cols_prev_selected, graphs_prev_
         return graphs, col_selected
 
 
+'''
+Creating Dynamic components based on the column selection. This call back will occur
+'''
 @app.callback(
     [
         Output(component_id={'type': 'dynPieChart', 'index': MATCH}, component_property='figure'),
@@ -171,6 +180,7 @@ def on_data_set_dyn_graph(col_data_store):
     )
     columns = [{"name": i, "id": i} for i in col_data_store[0].keys()]
     data = col_data_store
+    # Conditional styling for the data table
     style_data_conditional=[
         {
             'if': {
